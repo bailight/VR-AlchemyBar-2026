@@ -10211,7 +10211,7 @@ MonoBehaviour:
   m_EditorClassIdentifier: Assembly-CSharp::AlchemyBar.Brewing.CauldronLiquidVisual
   liquidRenderer: {fileID: 0}
   steamParticles: {fileID: 0}
-  baseLiquidColor: {r: 0.12, g: 0.08, b: 0.22, a: 1}
+  baseLiquidColor: {r: 0.6635735, g: 0.5515208, b: 0.91823894, a: 1}
   rawBlendStrength: 0.35
   groundBlendStrength: 0.55
   lowSteamTemperature: 50
@@ -21172,7 +21172,7 @@ Transform:
   m_GameObject: {fileID: 1018552127}
   serializedVersion: 2
   m_LocalRotation: {x: 0, y: 0, z: 0, w: 1}
-  m_LocalPosition: {x: 0, y: 1.02, z: 3.85}
+  m_LocalPosition: {x: 0.061, y: 1.02, z: 3.85}
   m_LocalScale: {x: 1.2, y: 0.08, z: 0.75}
   m_ConstrainProportionsScale: 0
   m_Children: []
