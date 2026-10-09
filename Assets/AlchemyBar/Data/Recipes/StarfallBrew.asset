@@ -1,0 +1,85 @@
+%YAML 1.1
+%TAG !u! tag:unity3d.com,2011:
+--- !u!114 &11400000
+MonoBehaviour:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 0}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: fd21419fbd6932947999812f8c7576cd, type: 3}
+  m_Name: StarfallBrew
+  m_EditorClassIdentifier: Assembly-CSharp::AlchemyBar.Recipes.RecipeDefinition
+  recipeId: starfall_brew
+  displayName: Starfall Brew
+  description: A violet magical brew combining Star Dust with ground Nightshade Petal.
+  resultColor: {r: 0.65, g: 0.25, b: 1, a: 1}
+  steps:
+  - stepType: 0
+    ingredient: {fileID: 11400000, guid: 0adc84336f7b422409753a22ccf1427e, type: 2}
+    requiredPreparationState: 0
+    targetTemperature: 70
+    temperatureTolerance: 3
+    minimumTemperature: 65
+    maximumTemperature: 75
+    requiredDuration: 10
+    temperatureGracePeriod: 0.75
+    stirDirection: 1
+    requiredStirringDegrees: 720
+  - stepType: 1
+    ingredient: {fileID: 11400000, guid: b67f224d8bc604f4a9e53e029adb2e11, type: 2}
+    requiredPreparationState: 1
+    targetTemperature: 70
+    temperatureTolerance: 3
+    minimumTemperature: 65
+    maximumTemperature: 75
+    requiredDuration: 10
+    temperatureGracePeriod: 0.75
+    stirDirection: 1
+    requiredStirringDegrees: 720
+  - stepType: 2
+    ingredient: {fileID: 0}
+    requiredPreparationState: 0
+    targetTemperature: 60
+    temperatureTolerance: 4
+    minimumTemperature: 65
+    maximumTemperature: 75
+    requiredDuration: 10
+    temperatureGracePeriod: 0.75
+    stirDirection: 1
+    requiredStirringDegrees: 720
+  - stepType: 4
+    ingredient: {fileID: 0}
+    requiredPreparationState: 0
+    targetTemperature: 70
+    temperatureTolerance: 3
+    minimumTemperature: 65
+    maximumTemperature: 75
+    requiredDuration: 10
+    temperatureGracePeriod: 0.75
+    stirDirection: 0
+    requiredStirringDegrees: 360
+  - stepType: 5
+    ingredient: {fileID: 0}
+    requiredPreparationState: 0
+    targetTemperature: 70
+    temperatureTolerance: 3
+    minimumTemperature: 65
+    maximumTemperature: 75
+    requiredDuration: 3
+    temperatureGracePeriod: 0.75
+    stirDirection: 1
+    requiredStirringDegrees: 720
+  - stepType: 6
+    ingredient: {fileID: 0}
+    requiredPreparationState: 0
+    targetTemperature: 70
+    temperatureTolerance: 3
+    minimumTemperature: 65
+    maximumTemperature: 75
+    requiredDuration: 10
+    temperatureGracePeriod: 0.75
+    stirDirection: 1
+    requiredStirringDegrees: 720

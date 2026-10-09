@@ -1,0 +1,22 @@
+%YAML 1.1
+%TAG !u! tag:unity3d.com,2011:
+--- !u!114 &11400000
+MonoBehaviour:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 0}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: 3abba37d616f34749a9a3ad3cd16c9ce, type: 3}
+  m_Name: NightshadePetal
+  m_EditorClassIdentifier: Assembly-CSharp::AlchemyBar.Ingredients.IngredientDefinition
+  id: nightshade_petal
+  displayName: Nightshade Petal
+  ingredientType: 0
+  baseColor: {r: 0.35, g: 0.08, b: 0.52, a: 1}
+  magicalColor: {r: 0.78, g: 0.2, b: 1, a: 1}
+  grindable: 1
+  requiredGrindingAmount: 0.75
+  heatSensitive: 0
