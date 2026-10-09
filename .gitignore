@@ -1,0 +1,62 @@
+# Unity-generated directories
+/[Ll]ibrary/
+/[Tt]emp/
+/[Oo]bj/
+/[Ll]ogs/
+/[Uu]ser[Ss]ettings/
+/[Mm]emoryCaptures/
+/[Rr]ecordings/
+
+# Build output
+/[Bb]uild/
+/[Bb]uilds/
+*.apk
+*.aab
+*.app
+*.unitypackage
+
+# IDE and editor-generated files
+/.vs/
+/.vscode/
+/.idea/
+*.csproj
+*.sln
+*.slnx
+*.unityproj
+*.user
+*.userprefs
+*.suo
+*.tmp
+*.pidb
+*.booproj
+*.svd
+*.pdb
+*.mdb
+*.opendb
+*.VC.db
+
+# Rider / JetBrains generated plugin files
+/[Aa]ssets/Plugins/Editor/JetBrains*
+
+# Gradle and Android build caches
+/.gradle/
+/[Ee]xported[Oo]bj/
+
+# Unity crash reports
+sysinfo.txt
+crashlytics-build.properties
+
+# Operating-system files
+.DS_Store
+.DS_Store?
+._*
+.Spotlight-V100
+.Trashes
+ehthumbs.db
+Thumbs.db
+Desktop.ini
+
+# Keep these Unity project sources under version control:
+# Assets/ (including every .meta file)
+# Packages/manifest.json and Packages/packages-lock.json
+# ProjectSettings/

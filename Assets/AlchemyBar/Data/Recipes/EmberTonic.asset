@@ -1,0 +1,75 @@
+%YAML 1.1
+%TAG !u! tag:unity3d.com,2011:
+--- !u!114 &11400000
+MonoBehaviour:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 0}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: fd21419fbd6932947999812f8c7576cd, type: 3}
+  m_Name: EmberTonic
+  m_EditorClassIdentifier: Assembly-CSharp::AlchemyBar.Recipes.RecipeDefinition
+  recipeId: ember_tonic
+  displayName: Ember Tonic
+  description: A high-temperature tonic made from ground Ember Root and counter-clockwise
+    agitation.
+  resultColor: {r: 1, g: 0.3, b: 0.08, a: 1}
+  steps:
+  - stepType: 1
+    ingredient: {fileID: 11400000, guid: 662d18c4e06047c4a8766999dc0fbb3d, type: 2}
+    requiredPreparationState: 1
+    targetTemperature: 70
+    temperatureTolerance: 3
+    minimumTemperature: 65
+    maximumTemperature: 75
+    requiredDuration: 10
+    temperatureGracePeriod: 0.75
+    stirDirection: 1
+    requiredStirringDegrees: 720
+  - stepType: 2
+    ingredient: {fileID: 0}
+    requiredPreparationState: 0
+    targetTemperature: 85
+    temperatureTolerance: 4
+    minimumTemperature: 65
+    maximumTemperature: 75
+    requiredDuration: 10
+    temperatureGracePeriod: 0.75
+    stirDirection: 1
+    requiredStirringDegrees: 720
+  - stepType: 3
+    ingredient: {fileID: 0}
+    requiredPreparationState: 0
+    targetTemperature: 70
+    temperatureTolerance: 3
+    minimumTemperature: 80
+    maximumTemperature: 90
+    requiredDuration: 6
+    temperatureGracePeriod: 0.75
+    stirDirection: 1
+    requiredStirringDegrees: 720
+  - stepType: 4
+    ingredient: {fileID: 0}
+    requiredPreparationState: 0
+    targetTemperature: 70
+    temperatureTolerance: 3
+    minimumTemperature: 65
+    maximumTemperature: 75
+    requiredDuration: 10
+    temperatureGracePeriod: 0.75
+    stirDirection: 2
+    requiredStirringDegrees: 540
+  - stepType: 6
+    ingredient: {fileID: 0}
+    requiredPreparationState: 0
+    targetTemperature: 70
+    temperatureTolerance: 3
+    minimumTemperature: 65
+    maximumTemperature: 75
+    requiredDuration: 10
+    temperatureGracePeriod: 0.75
+    stirDirection: 1
+    requiredStirringDegrees: 720

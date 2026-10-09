@@ -1,0 +1,86 @@
+%YAML 1.1
+%TAG !u! tag:unity3d.com,2011:
+--- !u!114 &11400000
+MonoBehaviour:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 0}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: fd21419fbd6932947999812f8c7576cd, type: 3}
+  m_Name: MoonlightElixir
+  m_EditorClassIdentifier: Assembly-CSharp::AlchemyBar.Recipes.RecipeDefinition
+  recipeId: moonlight_elixir
+  displayName: Moonlight Elixir
+  description: A cool lunar infusion of ground Moonleaf and Crystal Berry, stabilized
+    with clockwise stirring.
+  resultColor: {r: 0.25, g: 0.85, b: 1, a: 1}
+  steps:
+  - stepType: 1
+    ingredient: {fileID: 11400000, guid: f62f1e03409b7b442982c340aaaa60cf, type: 2}
+    requiredPreparationState: 1
+    targetTemperature: 70
+    temperatureTolerance: 3
+    minimumTemperature: 65
+    maximumTemperature: 75
+    requiredDuration: 10
+    temperatureGracePeriod: 0.75
+    stirDirection: 1
+    requiredStirringDegrees: 720
+  - stepType: 1
+    ingredient: {fileID: 11400000, guid: 9cb6034be1a1d6d40bd6389fdfa8242b, type: 2}
+    requiredPreparationState: 0
+    targetTemperature: 70
+    temperatureTolerance: 3
+    minimumTemperature: 65
+    maximumTemperature: 75
+    requiredDuration: 10
+    temperatureGracePeriod: 0.75
+    stirDirection: 1
+    requiredStirringDegrees: 720
+  - stepType: 2
+    ingredient: {fileID: 0}
+    requiredPreparationState: 0
+    targetTemperature: 70
+    temperatureTolerance: 3
+    minimumTemperature: 65
+    maximumTemperature: 75
+    requiredDuration: 10
+    temperatureGracePeriod: 0.75
+    stirDirection: 1
+    requiredStirringDegrees: 720
+  - stepType: 3
+    ingredient: {fileID: 0}
+    requiredPreparationState: 0
+    targetTemperature: 70
+    temperatureTolerance: 3
+    minimumTemperature: 65
+    maximumTemperature: 75
+    requiredDuration: 10
+    temperatureGracePeriod: 0.75
+    stirDirection: 1
+    requiredStirringDegrees: 720
+  - stepType: 4
+    ingredient: {fileID: 0}
+    requiredPreparationState: 0
+    targetTemperature: 70
+    temperatureTolerance: 3
+    minimumTemperature: 65
+    maximumTemperature: 75
+    requiredDuration: 10
+    temperatureGracePeriod: 0.75
+    stirDirection: 1
+    requiredStirringDegrees: 720
+  - stepType: 6
+    ingredient: {fileID: 0}
+    requiredPreparationState: 0
+    targetTemperature: 70
+    temperatureTolerance: 3
+    minimumTemperature: 65
+    maximumTemperature: 75
+    requiredDuration: 10
+    temperatureGracePeriod: 0.75
+    stirDirection: 1
+    requiredStirringDegrees: 720
