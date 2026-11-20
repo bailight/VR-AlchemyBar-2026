@@ -89,8 +89,11 @@ namespace AlchemyBar.UI.Menus
             UnlockLocomotion();
         }
 
+        private bool started;
+
         private void Start()
         {
+            started = true;
             ApplyPresentation(presentation);
             Show(startScreen, false);
         }
@@ -111,6 +114,9 @@ namespace AlchemyBar.UI.Menus
 
         private void Update()
         {
+            if (!frozen && freezeWorldWhileMenuOpen && current != HexHearthScreen.None && UnityEngine.Rendering.SplashScreen.isFinished)
+                UpdateTimeScale();
+
             if (!escapeOpensPause) return;
             MoveSimulatorOffEscape();
             bool pressed = Keyboard.current != null && Keyboard.current.escapeKey.wasPressedThisFrame
@@ -173,6 +179,8 @@ namespace AlchemyBar.UI.Menus
         {
             if (remember && current != HexHearthScreen.None && current != screen) history.Push(current);
             bool wasHidden = current == HexHearthScreen.None;
+            if (wasHidden && screen != HexHearthScreen.None && presentation == MenuPresentation.Auto && started)
+                ApplyPresentation(presentation);
             current = screen;
             SetActive(screen);
             UpdateMood();
@@ -209,7 +217,7 @@ namespace AlchemyBar.UI.Menus
         {
             bool menuOpen = current != HexHearthScreen.None;
 
-            bool shouldFreeze = freezeWorldWhileMenuOpen && menuOpen;
+            bool shouldFreeze = freezeWorldWhileMenuOpen && menuOpen && UnityEngine.Rendering.SplashScreen.isFinished;
             if (shouldFreeze && !frozen) { timeScaleBeforePause = Time.timeScale; Time.timeScale = 0f; frozen = true; }
             else if (!shouldFreeze && frozen) { Time.timeScale = timeScaleBeforePause; frozen = false; }
 
@@ -242,9 +250,33 @@ namespace AlchemyBar.UI.Menus
             }
         }
 
+        private static bool SimulatorPresent() =>
+            FindAnyObjectByType<XRDeviceSimulator>() != null || FindAnyObjectByType<XRInteractionSimulator>() != null;
+
+        private void LockAsset(InputActionAsset asset, System.Func<InputActionMap, bool> filter)
+        {
+            if (asset == null) return;
+            foreach (InputActionMap map in asset.actionMaps)
+            {
+                if (!filter(map)) continue;
+                foreach (InputAction action in map.actions)
+                {
+                    if (!action.enabled || lockedActions.Contains(action)) continue;
+                    action.Disable();
+                    lockedActions.Add(action);
+                }
+            }
+        }
+
         private void LockLocomotion()
         {
             if (lockedActions.Count > 0) return;
+            foreach (XRDeviceSimulator simulator in FindObjectsByType<XRDeviceSimulator>(FindObjectsSortMode.None))
+            {
+                LockAsset(simulator.deviceSimulatorActionAsset, _ => true);
+                LockAsset(simulator.controllerActionAsset, _ => true);
+                LockAsset(simulator.handActionAsset, _ => true);
+            }
             foreach (InputActionManager manager in FindObjectsByType<InputActionManager>(FindObjectsSortMode.None))
             {
                 if (manager.actionAssets == null) continue;
@@ -311,7 +343,7 @@ namespace AlchemyBar.UI.Menus
         private void ApplyPresentation(MenuPresentation requested)
         {
             activeMode = requested == MenuPresentation.Auto
-                ? (XRSettings.isDeviceActive ? MenuPresentation.FollowHead : MenuPresentation.ScreenOverlay)
+                ? (XRSettings.isDeviceActive && !SimulatorPresent() ? MenuPresentation.FollowHead : MenuPresentation.ScreenOverlay)
                 : requested;
 
             foreach (GameObject fill in screenFills)

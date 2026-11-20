@@ -52,6 +52,8 @@ MonoBehaviour:
   pause: {fileID: 3288378636101843129}
   startScreen: 1
   pauseAction: {fileID: 0}
+  escapeOpensPause: 1
+  simulatorStopManipulationBinding: <Keyboard>/backquote
   freezeWorldWhileMenuOpen: 1
   lockLocomotionWhileMenuOpen: 1
   screenFillColor: {r: 0.08627451, g: 0.05490196, b: 0.14117648, a: 1}

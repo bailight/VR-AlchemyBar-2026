@@ -68,8 +68,17 @@ namespace AlchemyBar.UI.Menus
                 if (rt.parent is RectTransform group && others >= 1 && others <= 2)
                 {
                     bool allIcons = true;
+                    float textTop = rt.anchoredPosition.y;
+                    float textBottom = textTop - rt.sizeDelta.y;
                     foreach (Transform child in group)
-                        if (child != rt && child != glow && child.GetComponent<Image>() == null) allIcons = false;
+                    {
+                        if (child == rt || child == glow) continue;
+                        if (child.GetComponent<Image>() == null) { allIcons = false; continue; }
+                        var c = (RectTransform)child;
+                        float top = c.anchoredPosition.y;
+                        float bottom = top - c.sizeDelta.y;
+                        if (bottom >= textTop || top <= textBottom) allIcons = false;
+                    }
 
                     if (allIcons)
                     {

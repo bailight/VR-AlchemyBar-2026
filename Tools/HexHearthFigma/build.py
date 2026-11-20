@@ -197,10 +197,11 @@ def subtree_svg(n, defs, bgctx=None, abs_m=None):
 # ---------- rasterize ----------
 os.makedirs(f'{OUT}/svg', exist_ok=True); os.makedirs(f'{OUT}/Sprites', exist_ok=True)
 jobs = {}
-def emit(name_hint, body, defs, x0, y0, w, h):
+def emit(name_hint, body, defs, x0, y0, w, h, density=None):
     """Register an SVG covering [x0,y0,w,h] (local coords). Returns sprite file name (deduped)."""
-    W, H = max(1, math.ceil(w*SCALE)), max(1, math.ceil(h*SCALE))
-    svg = (f'<svg xmlns="http://www.w3.org/2000/svg" xmlns:xlink="http://www.w3.org/1999/xlink" width="{W}" height="{H}" viewBox="{x0} {y0} {W/SCALE} {H/SCALE}">'
+    D = density or SCALE * 1.5
+    W, H = max(1, math.ceil(w*D)), max(1, math.ceil(h*D))
+    svg = (f'<svg xmlns="http://www.w3.org/2000/svg" xmlns:xlink="http://www.w3.org/1999/xlink" width="{W}" height="{H}" viewBox="{x0} {y0} {W/D} {H/D}">'
            f'<defs>{"".join(defs)}</defs>{body}</svg>')
     key = hashlib.sha1(svg.encode()).hexdigest()[:10]
     safe = ''.join(ch if ch.isalnum() else '_' for ch in name_hint).strip('_')[:40]
@@ -208,7 +209,7 @@ def emit(name_hint, body, defs, x0, y0, w, h):
     if not fn:
         fn = f'{safe}_{key}.png'; jobs[key] = fn
         open(f'{OUT}/svg/{fn[:-4]}.svg', 'w').write(svg)
-    return fn, W/SCALE, H/SCALE
+    return fn, W/D, H/D
 
 def has_text(n): return n['type'] == 'TEXT' or any(has_text(c) for c in children(n))
 def own_visual(n):
@@ -338,7 +339,7 @@ for fr in children(page):
     body = ''.join(f'<use href="#{s}"/>' for s in stack_ids)
     cid = uid('clip'); defs.append(f'<clipPath id="{cid}"><rect width="{DESIGN_W}" height="{h}"/></clipPath>')
     defs = layers + defs
-    fn, _, _ = emit(fr['name'] + '_backdrop', f'<g clip-path="url(#{cid})">{body}</g>', defs, 0, 0, DESIGN_W, h)
+    fn, _, _ = emit(fr['name'] + '_backdrop', f'<g clip-path="url(#{cid})">{body}</g>', defs, 0, 0, DESIGN_W, h, density=K)
     root = build(live, fr)
     key = fr['name'].split('·')[-1].strip().replace(' ', '')
     screens.append({'name': fr['name'], 'key': key, 'w': w, 'h': h, 'backdrop': fn, 'content': root})
@@ -354,6 +355,7 @@ def flat(screen):
                 'sprite': '', 'hasColor': False, 'color': [1, 1, 1, 1],
                 'visualSprite': '', 'visualX': 0, 'visualY': 0, 'visualW': 0, 'visualH': 0, 'visualHasColor': False, 'visualColor': [1, 1, 1, 1],
                 'glowSprite': '', 'glowX': 0, 'glowY': 0, 'glowW': 0, 'glowH': 0,
+                'shapeX': 0, 'shapeY': 0, 'shapeW': 0, 'shapeH': 0,
                 'chars': '', 'family': '', 'style': '', 'fontSize': 0, 'spacing': 0, 'align': '', 'baseline': 0, 'lines': 1,
                 'autoWidth': False, 'textColor': [1, 1, 1, 1], 'hasGradient': False, 'gradFrom': 0, 'gradTo': 1, 'gradStops': []}
     def walk(n, parent):
@@ -363,6 +365,8 @@ def flat(screen):
         if n['kind'] == 'image':
             e['sprite'] = n['sprite']
             if 'color' in n: e['hasColor'] = True; e['color'] = n['color']
+            sh = n.get('shape', {'x': 0, 'y': 0, 'w': n['w'], 'h': n['h']})
+            e.update({'shapeX': sh['x'], 'shapeY': sh['y'], 'shapeW': sh['w'], 'shapeH': sh['h']})
         if 'visual' in n:
             v = n['visual']; e.update({'visualSprite': v['sprite'], 'visualX': v['x'], 'visualY': v['y'], 'visualW': v['w'], 'visualH': v['h']})
             if 'color' in v: e['visualHasColor'] = True; e['visualColor'] = v['color']
@@ -380,9 +384,127 @@ def flat(screen):
     walk(screen['content'], -1)
     out[0]['x'] += (DESIGN_W - screen['w']) / 2   # centre the content in the widened frame
     for e in out:
-        for k in ('x', 'y', 'w', 'h', 'visualX', 'visualY', 'visualW', 'visualH', 'glowX', 'glowY', 'glowW', 'glowH', 'fontSize', 'baseline'):
+        for k in ('x', 'y', 'w', 'h', 'visualX', 'visualY', 'visualW', 'visualH', 'glowX', 'glowY', 'glowW', 'glowH', 'fontSize', 'baseline', 'shapeX', 'shapeY', 'shapeW', 'shapeH'):
             e[k] = round(e[k] * K, 3)
+    relayout(screen['key'], out)
     return out
+
+SCALED = ('w', 'h', 'visualX', 'visualY', 'visualW', 'visualH', 'glowX', 'glowY', 'glowW', 'glowH', 'fontSize', 'baseline', 'shapeX', 'shapeY', 'shapeW', 'shapeH')
+
+def scale_subtree(out, nid, s):
+    def kids(i): return [e for e in out if e['parent'] == i]
+    def scale_node(e):
+        for k in SCALED: e[k] *= s
+    scale_node(out[nid])
+    stack = kids(nid)
+    while stack:
+        d = stack.pop()
+        d['x'] *= s; d['y'] *= s
+        scale_node(d)
+        stack.extend(kids(d['id']))
+
+CONTENT_FRAC = {'Café emblem': (0.2375, 0.039, 0.525, 0.578)}
+
+def visual_box(e):
+    if e['name'] in CONTENT_FRAC and e['shapeH']:
+        fx, fy, fw, fh = CONTENT_FRAC[e['name']]
+        return (e['shapeX'] + fx * e['shapeW'], e['shapeY'] + fy * e['shapeH'], fw * e['shapeW'], fh * e['shapeH'])
+    if e['kind'] == 'image' and e['shapeH']:
+        return e['shapeX'], e['shapeY'], e['shapeW'], e['shapeH']
+    return 0, 0, e['w'], e['h']
+
+DIVIDER_Y = 412
+ICON_TOP, ICON_H = 92, 128
+CAP_GAP, CAP_FS = 26, 19
+TITLE_FS, BASE_Y = 108, 380
+BUTTONS_TOP = 540
+OUT_SIZE = (1920, 1080)
+
+def node(out, name, parent=None):
+    return next(c for c in out if c['name'] == name and (parent is None or c['parent'] == parent))
+
+def abs_xy(out, e):
+    x = y = 0
+    while e is not None:
+        x += e['x']; y += e['y']
+        e = out[e['parent']] if e['parent'] >= 0 else None
+    return x, y
+
+def place(out, e, ax, ay):
+    px, py = abs_xy(out, out[e['parent']]) if e['parent'] >= 0 else (0, 0)
+    e['x'] = ax - px; e['y'] = ay - py
+
+def center_x(out, e, ay):
+    vx, vy, vw, vh = visual_box(e)
+    place(out, e, OUT_SIZE[0] / 2 - vw / 2 - vx, ay - vy)
+
+def icon_and_caption(out, icon, caption):
+    scale_subtree(out, icon['id'], ICON_H / visual_box(icon)[3])
+    center_x(out, icon, ICON_TOP)
+    scale_subtree(out, caption['id'], CAP_FS / caption['fontSize'])
+    center_x(out, caption, ICON_TOP + ICON_H + CAP_GAP)
+
+def title_on_baseline(out, frame, text):
+    scale_subtree(out, frame['id'], TITLE_FS / text['fontSize'])
+    tx, ty = abs_xy(out, text)
+    fx, fy = abs_xy(out, frame)
+    center_x(out, frame, fy + (BASE_Y - (ty + text['baseline'])))
+
+def stack_below(out, items, buttons):
+    y = DIVIDER_Y
+    for e, s, gap in items:
+        if s != 1: scale_subtree(out, e['id'], s)
+        center_x(out, e, y)
+        y += visual_box(e)[3] + gap
+    assert y + 24 <= BUTTONS_TOP, ('text below divider runs into buttons', y)
+    center_x(out, buttons, BUTTONS_TOP)
+    return BUTTONS_TOP + visual_box(buttons)[3]
+
+def scale_button_labels(out, prefix, s):
+    for btn in [x for x in out if x['name'].startswith(prefix)]:
+        grp = next(c for c in out if c['parent'] == btn['id'] and c['name'] == 'Frame')
+        scale_subtree(out, grp['id'], s)
+        grp['x'] = (btn['w'] - grp['w']) / 2
+        grp['y'] = (btn['h'] - grp['h']) / 2
+
+def relayout(key, out):
+    if key == 'Mainmenu':
+        scale_button_labels(out, 'Menu button', 1.35)
+        icon_and_caption(out, node(out, 'Café emblem', 0), node(out, 'Game category', 0))
+        logo = node(out, 'Title logo', 0)
+        title_on_baseline(out, logo, node(out, 'Title signature', logo['id']))
+        bottom = stack_below(out, [(node(out, 'Title flourish', 0), 1.0, 10), (node(out, 'Subtitle', 0), 1.6, 0)],
+                             node(out, 'Main menu', 0))
+        alpha = {'Subtitle': 0.9, 'Game category': 1.0}
+    elif key == 'Pause':
+        scale_button_labels(out, 'Pause btn', 1.3)
+        header = node(out, 'Pause header', 0)
+        ring, eyebrow = node(out, 'Pause icon ring', header['id']), node(out, 'Pause eyebrow', header['id'])
+        for e in (ring, eyebrow):
+            ax, ay = abs_xy(out, e)
+            e['parent'] = 0
+            place(out, e, ax, ay)
+        header['w'] = header['h'] = 0
+        icon_and_caption(out, ring, eyebrow)
+        title = node(out, 'Pause title', 0)
+        title_on_baseline(out, title, title)
+        bottom = stack_below(out, [(node(out, 'Flourish', 0), 1.0, 10), (node(out, 'Pause flavour', 0), 1.3, 0)],
+                             node(out, 'Pause actions', 0))
+        stats = node(out, 'Session info', 0)
+        stats['visualSprite'] = ''
+        center_x(out, stats, bottom + 12)
+        assert bottom + 12 + visual_box(stats)[3] <= 1036
+        alpha = {'Pause flavour': 0.85, 'Pause eyebrow': 1.0}
+    else:
+        return
+    print(key, 'content bottom', round(bottom))
+    assert bottom <= 1000, (key, bottom)
+    for name, a in alpha.items():
+        for e in out:
+            if e['name'] == name and e['kind'] == 'text':
+                e['textColor'][3] = a
+    for e in out:
+        for k in ('x', 'y') + SCALED: e[k] = round(e[k], 3)
 
 json.dump({'scale': 1.0, 'screens': [{'name': s['name'], 'key': s['key'], 'width': OUT_W, 'height': OUT_H, 'backdrop': s['backdrop'], 'nodes': flat(s)} for s in screens]},
           open(f'{OUT}/hexhearth_layout.json', 'w'), indent=1, ensure_ascii=False)
