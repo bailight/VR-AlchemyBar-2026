@@ -1009,11 +1009,11 @@ PlayerSettings:
   captureStartupLogs: {}
   activeInputHandler: 1
   windowsGamepadBackendHint: 0
-  cloudProjectId: a6781dfc-8584-47a6-aba2-2a0770092067
+  cloudProjectId: 56cbcc4c-7635-4eb0-a427-a48a1a414cc8
   framebufferDepthMemorylessMode: 0
   qualitySettingsNames: []
-  projectName: VR-Project
-  organizationId: phantuanitmo
+  projectName: AlchemyBar
+  organizationId: lixinyue9baili
   cloudEnabled: 0
   legacyClampBlendShapeWeights: 0
   hmiLoadingImage: {fileID: 0}
